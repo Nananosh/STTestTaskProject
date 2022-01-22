@@ -1,0 +1,104 @@
+<h1 id="tableLabel">Таблица сотрудников</h1>
+
+<p *ngIf="!staffs"><em>Загрузка...</em></p>
+<button class="btn btn-outline-success" (click)="open(content,0)">Добавить</button>
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="staffs">
+  <thead>
+  <tr>
+    <th>Имя</th>
+    <th>Фамилия</th>
+    <th>Отчество</th>
+    <th>Дата создания</th>
+    <th>Дата последнего редактирования</th>
+    <th>Дата принятия</th>
+    <th>Позиция</th>
+    <th>Отдел</th>
+    <th></th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let staff of staffs">
+    <td>{{ staff.name }}</td>
+    <td>{{ staff.surname }}</td>
+    <td>{{ staff.lastname }}</td>
+    <td>{{ staff.creationDate | date:'yyyy-MM-dd' }}</td>
+    <td>{{ staff.lastEditDate | date:'yyyy-MM-dd' }}</td>
+    <td>{{ staff.employmentDate | date:'yyyy-MM-dd' }}</td>
+    <td>{{ staff.position.positionName }}</td>
+    <td>{{ staff.department.departmentName }}</td>
+    <td>
+      <button class="btn btn-outline-warning" (click)="open(content,staff.id)">Изменить</button>
+    </td>
+    <td>
+      <button class="btn btn-outline-danger" (click)="deleteStaff(staff.id)">Удалить</button>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Изменение сотрудника</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="col-xs-10">
+        <div class="form-group">
+          <label>Имя</label>
+          <input class="form-control" name="name" required="required"
+                 [(ngModel)]="editStaff.name" #name="ngModel"/>
+          <span *ngIf="name.touched && name.invalid" class="text-danger">Обязательно</span>
+        </div>
+        <div class="form-group">
+          <label>Фамилия</label>
+          <input class="form-control" name="surname" required="required"
+                 [(ngModel)]="editStaff.surname" #surname="ngModel"/>
+          <span *ngIf="surname.touched && surname.invalid" class="text-danger">Обязательно</span>
+        </div>
+        <div class="form-group">
+          <label>Отчество</label>
+          <input class="form-control" name="lastname" required="required"
+                 [(ngModel)]="editStaff.lastname" #lastname="ngModel"/>
+          <span *ngIf="lastname.touched && lastname.invalid" class="text-danger">Обязательно</span>
+        </div>
+        <div class="form-group">
+          <label>Дата принятия на работу</label>
+          <input type="datetime-local" class="form-control" name="employmentDate" required="required"
+                 [(ngModel)]="editStaff.employmentDate" #employmentDate="ngModel"/>
+          <span *ngIf="employmentDate.touched && employmentDate.invalid" class="text-danger">Обязательно</span>
+        </div>
+        <div class="form-group">
+          <label>Департамент</label>
+          <select class="form-control custom-select" name="department" required="required"
+                  [(ngModel)]="editStaff.departmentId" #departmentId="ngModel">
+            <option *ngFor="let dep of departments" [value]="dep.id">
+              {{dep.departmentName}}
+            </option>
+          </select>
+          <span *ngIf="departmentId.touched && departmentId.invalid" class="text-danger">Обязательно</span>
+        </div>
+        <div class="form-group">
+          <label>Должность</label>
+          <select class="form-control custom-select" name="position" required="required"
+                  [(ngModel)]="editStaff.positionId" #positionId="ngModel">
+            <option *ngFor="let pos of positions" [value]="pos.id">
+              {{pos.positionName}}
+            </option>
+          </select>
+          <span *ngIf="positionId.touched && positionId.invalid" class="text-danger">Обязательно</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          [disabled]="name.invalid || surname.invalid || lastname.invalid || employmentDate.invalid || departmentId.invalid || positionId.invalid"
+          type="button" class="btn btn-outline-success"
+          (click)="manageStaff(editStaff); modal.close('Save click')">Сохранить
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-template>

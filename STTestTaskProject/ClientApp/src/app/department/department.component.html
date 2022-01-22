@@ -1,0 +1,56 @@
+<h1 id="tableLabel">Таблица отделений</h1>
+
+<p *ngIf="!departments"><em>Загрузка...</em></p>
+<button class="btn btn-outline-success" (click)="open(content,0)">Добавить</button>
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="departments">
+  <thead>
+  <tr>
+    <th>Название отдела</th>
+    <th>Дата создания редактирования</th>
+    <th>Дата последнего редактирования</th>
+    <th></th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let staff of departments">
+    <td>{{ staff.departmentName }}</td>
+    <td>{{ staff.creationDate | date:'yyyy-MM-dd' }}</td>
+    <td>{{ staff.lastEditDate | date:'yyyy-MM-dd' }}</td>
+    <td>
+      <button class="btn btn-outline-warning" (click)="open(content,staff.id)">Изменить</button>
+    </td>
+    <td>
+      <button class="btn btn-outline-danger" (click)="deleteStaff(staff.id)">Удалить</button>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Изменение отдела</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="col-xs-10">
+        <div class="form-group">
+          <label>Название отдела</label>
+          <input class="form-control" name="departmentName" required="required"
+                 [(ngModel)]="editDepartment.departmentName" #departmentName="ngModel"/>
+          <span *ngIf="departmentName.touched && departmentName.invalid" class="text-danger">Обязательно</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          [disabled]="departmentName.invalid"
+          type="button" class="btn btn-outline-success"
+          (click)="manageDepartment(editDepartment); modal.close('Save click')">Сохранить
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-template>

@@ -1,0 +1,52 @@
+<h1 id="tableLabel">Таблица сотрудников</h1>
+
+<p *ngIf="!positions"><em>Загрузка...</em></p>
+<button class="btn btn-outline-success" (click)="open(content,0)">Добавить</button>
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="positions">
+  <thead>
+  <tr>
+    <th>Название должности</th>
+    <th></th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let position of positions">
+    <td>{{ position.positionName }}</td>
+    <td>
+      <button class="btn btn-outline-warning" (click)="open(content,position.id)">Изменить</button>
+    </td>
+    <td>
+      <button class="btn btn-outline-danger" (click)="deletePosition(position.id)">Удалить</button>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Изменение должности</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="col-xs-10">
+        <div class="form-group">
+          <label>Название должности</label>
+          <input class="form-control" name="positionName"
+                 [(ngModel)]="editPosition.positionName" #positionName="ngModel" required="required"/>
+          <span *ngIf="positionName.touched && positionName.invalid" class="text-danger">Обязательно</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          [disabled]="positionName.invalid"
+          type="button" class="btn btn-outline-success"
+          (click)="managePosition(editPosition); modal.close('Save click')">Сохранить
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-template>
